@@ -1,1 +1,1 @@
-# demo.tofu-module-minikube
+# tofu-module-minikube
