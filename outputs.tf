@@ -1,7 +1,7 @@
 # todo: output masked sensitive values to show existence
 output "minikube_clusters" {
   value = {
-    for k, v in module.minikube_cluster : k => {
+    for k, v in minikube_cluster.default : k => {
       host : v.host,
       id : v.id
     }

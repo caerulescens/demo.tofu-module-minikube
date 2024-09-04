@@ -8,10 +8,11 @@ terraform {
   }
 }
 
-module "minikube_cluster" {
+# todo: 'auto_pause_interval' missing completions?
+# todo: 'gpus' missing completions?
+# todo: 'output' missing completion?
+resource "minikube_cluster" "default" {
   for_each                   = var.minikube_clusters
-  source                     = "./modules/minikube_cluster"
-  providers                  = { minikube = minikube }
   addons                     = each.value.addons
   apiserver_ips              = each.value.apiserver_ips
   apiserver_name             = each.value.apiserver_name
