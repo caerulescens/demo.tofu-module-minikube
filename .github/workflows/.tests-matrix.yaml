@@ -7,12 +7,6 @@ on:
       tofu-version:
         required: true
         type: string
-      tflint-version:
-        required: true
-        type: string
-      run-tflint:
-        required: true
-        type: boolean
       run-tftest:
         required: true
         type: boolean
@@ -22,32 +16,6 @@ defaults:
     shell: bash
 
 jobs:
-
-  tflint:
-    name: Lint Tofu
-    runs-on: ${{ inputs.runner }}
-    if: inputs.run-tflint
-    steps:
-      - uses: actions/cache@v4
-        name: Cache tflint plugins
-        with:
-          path: ~/.tflint.d/plugins
-          key: tflint-${{ inputs.runner }}-${{ hashFiles('.tflint.hcl') }}
-          restore-keys: |
-            tflint-${{ inputs.runner }}-
-
-      - uses: Tofu-linters/setup-tflint@v4
-        name: Setup TFLint
-        with:
-          tflint_version: ${{ inputs.tflint-version }}
-
-      - name: Init TFLint
-        run: tflint --init
-        env:
-          GITHUB_TOKEN: ${{ github.token }}
-
-      - name: Run TFLint
-        run: tflint -f compact
 
   tftest:
     name: Test Tofu

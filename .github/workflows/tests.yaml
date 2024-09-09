@@ -84,8 +84,6 @@ jobs:
     with:
       runner: ${{ matrix.os.image }}
       tofu-version: "latest"
-      tflint-version: "latest"
-      run-tflint: ${{ needs.changes.outputs.tests == 'true' }}
       run-tftest: ${{ needs.changes.outputs.tests == 'true' }}
     secrets: inherit
 
