@@ -1,0 +1,64 @@
+name: Tofu Init
+description: Run `tofu init` with optional caching
+
+inputs:
+  args:
+    description: Arguments for `tofu init`
+  tofu-version:
+    description: Desired semver compatible Tofu version
+    required: true
+  cache:
+    description: Enable caching tofu project files
+    default: 'true'
+
+outputs:
+  tofu-version:
+    description: The Tofu version setup
+    value: ${{ steps.version-tofu.outputs.tofu-version }}
+  cache-hit:
+    description: Whether an exact cache hit occurred
+    value: ${{ steps.cache.outputs.cache-hit }}
+
+runs:
+  using: composite
+  steps:
+    - name: Setup Tofu
+      id: setup-tofu
+      uses: opentofu/setup-opentofu@v1
+      with:
+        tofu_version: ${{ inputs.tofu-version }}
+
+    - name: Get Version
+      id: version-tofu
+      run: printf 'tofu-version=%s\n' "$(tofu version -json | jq -r '.terraform_version')" >> $GITHUB_OUTPUT
+      shell: bash
+
+    - run: printf 'date=%s\n' "$(date -I)" >> $GITHUB_OUTPUT
+      id: get-date
+      if: inputs.cache == 'true'
+      shell: bash
+
+    - name: Configure Plugin Cache Directory
+      id: cache-config
+      if: inputs.cache == 'true'
+      run: |
+        echo 'plugin_cache_dir="~/.terraform.d/plugin-cache"' > ~/.terraformrc
+        mkdir -p ~/.terraform.d/plugin-cache
+      shell: bash
+
+    - uses: actions/cache@v4
+      name: Cache Tofu Plugins
+      id: cache-tofu
+      if: inputs.cache == 'true'
+      with:
+        path: |
+          ~/.terraform.d/plugin-cache
+        key: tofu-${{ steps.get-date.outputs.date }}-${{ runner.os }}-${{ hashFiles('.terraform.lock.hcl') }}
+        restore-keys: |
+          tofu-${{ steps.get-date.outputs.date }}-${{ runner.os }}-
+          tofu-${{ steps.get-date.outputs.date }}-
+
+    - name: Init Tofu
+      id: init-tofu
+      run: tofu init ${{ inputs.args }}
+      shell: bash
