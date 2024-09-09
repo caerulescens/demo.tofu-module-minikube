@@ -30,7 +30,7 @@ runs:
 
     - name: Get Version
       id: version-tofu
-      run: printf 'tofu-version=%s\n' "$(tofu version -json | jq -r '.opentofu_version')" >> $GITHUB_OUTPUT
+      run: printf 'tofu-version=%s\n' "$(tofu version -json | jq -r '.terraform_version')" >> $GITHUB_OUTPUT
       shell: bash
 
     - run: printf 'date=%s\n' "$(date -I)" >> $GITHUB_OUTPUT
