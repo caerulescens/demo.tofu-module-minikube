@@ -29,7 +29,7 @@ repos:
     rev: v0.17.0
     hooks:
       - id: terraform-docs-docker
-        args: ["--output-file", "README.terraform.md", "."]
+        args: ["--output-file", "README.tofu.md", "."]
 
   - repo: https://github.com/gruntwork-io/pre-commit
     rev: v0.1.22

@@ -16,12 +16,12 @@ body:
     validations:
       required: true
 
-  # Terraform Version
+  # Tofu Version
   - type: textarea
-    id: terraform-version
+    id: tofu-version
     attributes:
-      label: "Terraform version"
-      description: Which terraform version were you using?
+      label: "Tofu version"
+      description: Which tofu version were you using?
       placeholder: e.g. '1.8.5'
     validations:
       required: true

@@ -49,24 +49,24 @@ jobs:
     name: Validate Configuration
     runs-on: ubuntu-latest
     outputs:
-      terraform-version: ${{ steps.terraform-init.outputs.terraform-version }}
+      tofu-version: ${{ steps.tofu-init.outputs.tofu-version }}
     if: needs.changes.outputs.project == 'true'
     needs:
       - changes
     steps:
       - uses: actions/checkout@v4
 
-      - uses: ./.github/actions/terraform-init
-        id: terraform-init
+      - uses: ./.github/actions/tofu-init
+        id: tofu-init
         with:
           args: '-backend=false'
-          terraform-version: "latest"
+          tofu-version: "latest"
 
-      - run: terraform validate
+      - run: tofu validate
 
   tests-matrix:
     uses: ./.github/workflows/.tests-matrix.yaml
-    name: "${{ matrix.os.name }} (Terraform ${{ needs.validate.outputs.terraform-version }})"
+    name: "${{ matrix.os.name }} (Tofu ${{ needs.validate.outputs.tofu-version }})"
     if: '!failure()'
     needs:
       - changes
@@ -83,7 +83,7 @@ jobs:
       fail-fast: false
     with:
       runner: ${{ matrix.os.image }}
-      terraform-version: "latest"
+      tofu-version: "latest"
       tflint-version: "latest"
       run-tflint: ${{ needs.changes.outputs.tests == 'true' }}
       run-tftest: ${{ needs.changes.outputs.tests == 'true' }}
